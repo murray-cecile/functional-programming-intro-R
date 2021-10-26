@@ -1,30 +1,169 @@
 ---
 title: "Introduction to functional programming in R"
 author: "Cecile Murray, Data Scientist, ERD BDS"
-date: "10/18/2021"
-output: ioslides_presentation
+date: "10/27/2021"
+output:
+  ioslides_presentation: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
 ```
 
+## Roadmap
 
-## Slide with Bullets
+- What is functional programming?
+- Why is it useful?
+- Anatomy of a function
+- Ways to repeatedly call functions
+- Demo
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+## Functional principles apply across programming languages 
 
-## Slide with R Output
+- R 
+- Python
+- Stata (macros)
+- SAS (macros)
+- many, many more
 
-```{r cars, echo = TRUE}
-summary(cars)
+## What is functional programming?
+
+*“When using a functional style, you strive to decompose components of the problem into isolated functions that operate independently. Each function taken by itself is simple and straightforward to understand; complexity is handled by composing functions in various ways.”*
+
+- Hadley Wickham, Advanced R  
+
+## How is functional programming different?
+
+- Procedural programming = repeatedly writing and executing sequential commands 
+- Functional programming = writing functions to define a set of operations, then repeatedly executing the functions 
+
+## What is a function?
+
+A function is a canned bit of code that takes in some inputs, performs some operations, and spits out some outputs.
+
+Example: `mean()`
+
+```{r mean}
+digits <- rnorm(10)
+digits
+
+mean(digits)
 ```
 
-## Slide with Plot
+## Example: procedural code
 
-```{r pressure}
-plot(pressure)
+```{r procedural_example}
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+# rescale from 0-1
+df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+
 ```
+
+<font size="1">Source: R for Data Science</font>
+
+## Example: procedural code
+
+```{r procedural_example_2}
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+# rescale from 0-1
+df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE)) 
+df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE)) # <-- copy-paste error!
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+
+```
+
+<font size="1">Source: R for Data Science</font>
+
+## Example: functional code
+
+```{r functional_example}
+# define function that rescales values from 0-1
+rescale <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+# call the function on each column
+df$a <- rescale(df$a)
+df$b <- rescale(df$b)
+df$c <- rescale(df$c)
+df$d <- rescale(df$d)
+```
+
+<font size="1">Source: R for Data Science</font>
+
+## Benefits of a functional approach
+
+Functions can:
+
+- Reduce repetition/duplication in code
+- Enable testing to ensure code produces expected output
+- Serve as modular building blocks that can be re-used elsewhere  
+
+## DRY programming: "Don't repeat yourself" 
+
+Duplicated code is:  
+
+- Harder for other people to understand  
+- More likely to contain copy and paste or other "human" errors  
+- Harder to parse for errors in logic or unexpected side effects 
+- Harder to maintain over time 
+- Possibly slower to run (probably only relevant on very large datasets)  
+
+## Functions can be tested
+
+- Verify that your function produces expected outputs for given inputs
+- Know with certainty that you will get correct output anywhere you use it
+- Much harder and more labor-intensive to do this with procedural code
+
+## Reusability
+
+- Once you write a function, you can use it again anywhere you want
+- This also allows you to use functions as building blocks
+
+## Key elements of functions
+
+- name
+- inputs, also known as arguments
+- body: where computation is defined
+- output, often called return value
+
+## Ways to call functions repeatedly in R
+
+- loops
+- base R `apply()` functions
+- `purrr::map()`
+
+## Demo
+
+## Thank you! Questions?
+
+cecile.m.murray@census.gov
 

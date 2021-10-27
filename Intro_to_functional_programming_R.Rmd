@@ -3,8 +3,8 @@ title: "Introduction to functional programming in R"
 author: "Cecile Murray, Data Scientist, ERD BDS"
 date: "10/27/2021"
 output:
-  ioslides_presentation: default
   beamer_presentation: default
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,21 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-## Roadmap
+## Goals
 
-- What is functional programming?
-- Why is it useful?
-- Anatomy of a function
-- Ways to repeatedly call functions
-- Demo
-
-## Functional principles apply across programming languages 
-
-- R 
-- Python
-- Stata (macros)
-- SAS (macros)
-- many, many more
+- What is functional programming and why is it useful?
+- Describe the components of a function
+- Explore how to use functions to reduce repetition via demo
 
 ## What is functional programming?
 
@@ -40,12 +30,21 @@ library(tidyverse)
 - Procedural programming = repeatedly writing and executing sequential commands 
 - Functional programming = writing functions to define a set of operations, then repeatedly executing the functions 
 
+## Functional principles apply outside of R
+
+- R 
+- Python
+- Stata (macros)
+- SAS (macros)
+- many, many more
+
 ## What is a function?
 
 A function is a canned bit of code that takes in some inputs, performs some operations, and spits out some outputs.
 
 Example: `mean()`
 
+\footnotesize
 ```{r mean}
 digits <- rnorm(10)
 digits
@@ -55,6 +54,7 @@ mean(digits)
 
 ## Example: procedural code
 
+\footnotesize
 ```{r procedural_example}
 df <- tibble::tibble(
   a = rnorm(10),
@@ -75,10 +75,11 @@ df$d <- (df$d - min(df$d, na.rm = TRUE)) /
 
 ```
 
-<font size="1">Source: R for Data Science</font>
+\footnotesize Source: R for Data Science
 
 ## Example: procedural code
 
+\footnotesize
 ```{r procedural_example_2}
 df <- tibble::tibble(
   a = rnorm(10),
@@ -91,7 +92,7 @@ df <- tibble::tibble(
 df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
   (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE)) 
 df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
-  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE)) # <-- copy-paste error!
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE)) # copy-paste bug
 df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
   (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
 df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
@@ -99,10 +100,11 @@ df$d <- (df$d - min(df$d, na.rm = TRUE)) /
 
 ```
 
-<font size="1">Source: R for Data Science</font>
+Source: R for Data Science
 
 ## Example: functional code
 
+\footnotesize
 ```{r functional_example}
 # define function that rescales values from 0-1
 rescale <- function(x) {
@@ -152,18 +154,61 @@ Duplicated code is:
 
 - name
 - inputs, also known as arguments
-- body: where computation is defined
 - output, often called return value
+- body: where computation is defined
 
-## Ways to call functions repeatedly in R
+## Key elements of functions
 
-- loops
-- base R `apply()` functions
-- `purrr::map()`
+```{r func, eval=FALSE}
+do_something <- function(input1, input2) {
+  out <- input1 %>% some_operation(input2) 
+  return(out)
+}
+
+```
+
+## How do we avoid repetitive code?
+
+\footnotesize
+```{r repeated}
+# call the function on each column
+df$a <- rescale(df$a)
+df$b <- rescale(df$b)
+df$c <- rescale(df$c)
+df$d <- rescale(df$d)
+```
+
+Options:
+
+  - loops
+  - base R `apply()` functions
+  - `purrr::map()`
 
 ## Demo
 
+## Some topics we didn't cover
+
+Function topics:
+
+- scope + return values vs. side effects
+- lazy evaluation: arguments don't get evaluated until they're called
+- arbitrary number of inputs using `...`
+
+
+```purrr```
+
+- `purrr::map2` for two inputs
+- `purrr::pmap` for arbitrary number of inputs
+- list-columns: a column where each cell is a list instead of a single value (good for simulations/modeling)
+
 ## Thank you! Questions?
 
-cecile.m.murray@census.gov
+More detail: 
+
+- R4DS Ch. 19 https://r4ds.had.co.nz/functions.html
+- R4DS Ch. 21 https://r4ds.had.co.nz/iteration.html
+- https://purrr.tidyverse.org/index.html
+
+Contact me: cecile.m.murray@census.gov
+
 

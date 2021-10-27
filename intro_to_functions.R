@@ -14,7 +14,7 @@ library(tidyverse)
 
 # define a function
 square <- function(a) {
-  return(a * 2)
+  return(a ^ 2)
 }
 
 # one way to repeatedly call a function
@@ -24,6 +24,8 @@ square(3)
 square(4)
 
 
+assertthat::assert_that(square(4) == 16)
+
 # define list of numbers to square
 numbers_to_square <- seq(0, 5)
 
@@ -31,9 +33,15 @@ numbers_to_square <- seq(0, 5)
 
 
 # use a loop to call the function on each number in the list and print result
-for(num in numbers_to_square) {
-  print(square(num))
+
+save <- NULL
+
+for(x in numbers_to_square) {
+  save <- square(x)
 }
+
+save
+
 
 # loops are less abstract, but may not be the best tool:
 # - lots of bookkeeping about what you're looping over
@@ -65,7 +73,7 @@ purrr::map_dbl(numbers_to_square, ~ square(.))
 
 
 # read in the data
-pov19 <- read_csv("poverty_2019.csv")
+pov19 <- read_csv("data/poverty_2019.csv")
 head(pov19)
 
 #========== SIMPLE EXAMPLE: COLUMN TYPE
@@ -98,6 +106,8 @@ pov19 %>%
   map_chr(function(x) { class(x) } )
 
 # more concise syntax, same thing
+pov19 %>% 
+  map_chr(~ class(.))
 
 #==========================================================#
 # MORE COMPLEX EXAMPLE WITH MAP()
@@ -143,3 +153,6 @@ output <- map_dfr(
   seq(2016, 2019, 1),
   ~ create_rate_df(.)
 )
+
+head(output)
+distinct(output, year)
